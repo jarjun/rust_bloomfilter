@@ -1,22 +1,37 @@
 
 use std::hash::{Hash, Hasher, SipHasher};
 
-struct Bloom{
-    x: i32
-    , array: [i32; 1024]
+pub struct Bloom{
+    pub size: u64
+    , pub array: [i32; 1024]
 }
 
-fn main() {
+pub fn main() {
     println!("Hello, world!");
 }
 
 impl Bloom {
-    fn insert(&self){
+    pub fn insert(&mut self, value: String){
+        let hash_val = hash(value) % self.size;
+        self.array[hash_val as usize] = 1;
+    }
 
+    pub fn contains(&self, value: String) -> bool {
+        let hash_val = hash(value) % self.size;
+        self.array[hash_val as usize] == 1
     }
 }
 
-pub fn hash<T>(obj: T) -> u64 where T: Hash{
+///impl Default for Bloom {
+///    fn default() -> Bloom {
+///        Bloom {
+///            size: 1024,
+///            array: [0, ..1024]
+///        }
+///    }
+///}
+
+pub fn hash<T>(obj: T) -> u64 where T: Hash {
     let mut hasher = SipHasher::new();
     obj.hash(&mut hasher);
     return hasher.finish()
