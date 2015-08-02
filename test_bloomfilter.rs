@@ -11,8 +11,14 @@ fn test_hash_on_string(){
 }
 
 #[test]
+fn test_bloom_new() {
+    let bloom = bloomfilter::Bloom::new(0.90, 100);
+    println!("{:?}, {}", bloom.vec, bloom.hashes);
+}
+
+#[test]
 fn test_contains_good_value() {
-    let mut bloom = bloomfilter::Bloom { size: 1024, array: [0; 1024] };
+    let mut bloom = bloomfilter::Bloom::new(0.90, 100);
     bloom.insert("test".to_string());
     
     let contains = bloom.contains("test".to_string());
@@ -24,7 +30,7 @@ fn test_contains_good_value() {
 
 #[test]
 fn test_contains_bad_value() {
-    let mut bloom = bloomfilter::Bloom { size: 1024, array: [0; 1024] };
+    let mut bloom = bloomfilter::Bloom::new(0.90, 100);
     bloom.insert("test".to_string());
 
     let contains = bloom.contains("nope".to_string());
@@ -33,4 +39,3 @@ fn test_contains_bad_value() {
         panic!("contains should be FALSE");
     }
 }
-
